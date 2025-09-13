@@ -10,6 +10,8 @@ log() {
 # Tạo thư mục cần thiết, 
 DATASET_DIR="data/your_training_dataset"
 mkdir -p "$DATASET_DIR"
+mkdir -p ckpts/your_training_dataset
+
 # Bắt buộc phải có thư mục data/your_dataset chứa các file .wav, file .txt tương ứng, các bạn tự xử lý
 mkdir -p data/your_dataset
 
@@ -17,15 +19,15 @@ mkdir -p data/your_dataset
 EXP_NAME="F5TTS_Base"
 DATASET_NAME="your_training_dataset"
 BATCH_SIZE=7000
-NUM_WOKERS=16
+NUM_WORKERS=16
 WARMUP_UPDATES=20000
 SAVE_UPDATES=10000
 LAST_UPDATES=10000
 PRETRAIN_CKPT="/mnt/d/ckpts/your_training_dataset/pretrained_model_1200000.pt"
 
 # Tạo các biến stage để quản lý pipeline, bước nào đã chạy rồi thì không cần chạy lại
-stage=5
-stop_stage=5
+stage=0
+stop_stage=4
 
 # Chuẩn hoá sample_rate, bỏ qua stage này nếu audio của bạn đã ở định dạng 24Khz
 if [ $stage -le 0 ] && [ $stop_stage -ge 0 ]; then
@@ -54,7 +56,7 @@ fi
 # Trích xuất đặc trưng
 if [ $stage -le 4 ] && [ $stop_stage -ge 4 ]; then
     log "Feature extraction ... "
-    python src/f5_tts/train/datasets/prepare_csv_wavs.py "$DATASET_DIR" "$DATASET_DIR" --workers "$NUM_WOKERS"
+    python src/f5_tts/train/datasets/prepare_csv_wavs.py "$DATASET_DIR" "$DATASET_DIR" --workers "$NUM_WORKERS"
 fi
 
 # Chạy quá trình fine-tuning
