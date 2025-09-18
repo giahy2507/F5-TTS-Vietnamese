@@ -86,7 +86,7 @@ if __name__ == "__main__":
     vocab_size_new = len(tokens_new) - len(tokens_pretrained)
 
     # Đường dẫn checkpoint
-    ckpt_path = str(cached_path("https://huggingface.co/hynt/F5-TTS-Vietnamese-ViVoice/resolve/main/model_last.pt"))
+    ckpt_path = str(cached_path("hf://giahy2507/tts-experiments/F5-TTS-Vietnamese-ViVoice--ema_model_state_dict.pt"))
     new_ckpt_path = "ckpts/your_training_dataset/pretrained_model_1200000.pt"
 
     # Mở rộng embedding
