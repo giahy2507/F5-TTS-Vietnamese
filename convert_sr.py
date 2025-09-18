@@ -1,3 +1,4 @@
+import argparse
 import glob
 import os
 import subprocess
@@ -46,13 +47,17 @@ def process_audio_files(function, wav_paths):
 
 
 if __name__ == "__main__":
-    dataset_path = "data/your_dataset/*.wav"
+    parser = argparse.ArgumentParser(description="Xử lý file âm thanh")
+    parser.add_argument("--glob_path", type=str, help="Đường dẫn đến tập dữ liệu âm thanh")
+    args = parser.parse_args()
+
+    glob_path = args.glob_path
 
     # Chuyển đổi sample rate
-    process_audio_files(convert_sr, glob.glob(dataset_path))
+    process_audio_files(convert_sr, glob.glob(glob_path))
 
     # Xóa file gốc
-    process_audio_files(remove_original, glob.glob(dataset_path))
+    process_audio_files(remove_original, glob.glob(glob_path))
 
     # Đổi tên file
-    process_audio_files(rename_audio, glob.glob(dataset_path))
+    process_audio_files(rename_audio, glob.glob(glob_path))
