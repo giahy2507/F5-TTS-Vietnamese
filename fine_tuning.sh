@@ -18,11 +18,11 @@ mkdir -p data/your_dataset
 # Định nghĩa các tham số huấn luyện
 EXP_NAME="F5TTS_Base"
 DATASET_NAME="your_training_dataset"
-BATCH_SIZE=7000
+BATCH_SIZE=4096
 NUM_WORKERS=16
-WARMUP_UPDATES=20000
-SAVE_UPDATES=10000
-LAST_UPDATES=10000
+WARMUP_UPDATES=1000
+SAVE_UPDATES=500
+LAST_UPDATES=500
 PRETRAIN_CKPT="/mnt/d/ckpts/your_training_dataset/pretrained_model_1200000.pt"
 
 # Tạo các biến stage để quản lý pipeline, bước nào đã chạy rồi thì không cần chạy lại
@@ -32,7 +32,7 @@ stop_stage=4
 # Chuẩn hoá sample_rate, bỏ qua stage này nếu audio của bạn đã ở định dạng 24Khz
 if [ $stage -le 0 ] && [ $stop_stage -ge 0 ]; then
     log "Convert sample rate: data/your_dataset ..."
-    python convert_sr.py
+    python convert_sr.py --glob_path "data/your_dataset/*.wav"
 fi
 
 # Chuẩn bị dữ liệu audio_name và text tương ứng
@@ -84,5 +84,8 @@ if [ $stage -le 5 ] && [ $stop_stage -ge 5 ]; then
     #     --log_samples \
     #     --pretrain "$PRETRAIN_CKPT"
 fi
+
+cp ckpts/your_training_dataset/model_last.pt /content/drive/MyDrive/Data/F5-TTS-Vietnamese-ViVoice
+
 
 log "Fine-tuning F5-TTS done."
