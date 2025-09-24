@@ -6,6 +6,7 @@ import torch.nn.functional as F
 import torchaudio
 from datasets import Dataset as Dataset_
 from datasets import load_from_disk
+from datasets import load_dataset as load_hf_dataset
 from torch import nn
 from torch.utils.data import Dataset, Sampler
 from tqdm import tqdm
@@ -292,12 +293,10 @@ def load_dataset(
 
     elif dataset_type == "HFDataset":
         print(
-            "Should manually modify the path of huggingface dataset to your need.\n"
-            + "May also the corresponding script cuz different dataset may have different format."
+            f"Loading HF dataset {dataset_name} with cache dir at {str(files('f5_tts').joinpath('../../data'))}"
         )
-        pre, post = dataset_name.split("_")
         train_dataset = HFDataset(
-            load_dataset(f"{pre}/{pre}", split=f"train.{post}", cache_dir=str(files("f5_tts").joinpath("../../data"))),
+            load_hf_dataset(f"{dataset_name}", split="train", cache_dir=str(files("f5_tts").joinpath("../../data"))),
         )
 
     return train_dataset
