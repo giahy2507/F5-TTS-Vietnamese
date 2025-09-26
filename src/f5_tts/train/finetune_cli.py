@@ -31,6 +31,7 @@ def parse_args():
         help="Experiment name",
     )
     parser.add_argument("--dataset_name", type=str, default="Emilia_ZH_EN", help="Name of the dataset to use")
+    parser.add_argument("--dataset_type", type=str, default="CustomDataset", help="Type of the dataset")
     parser.add_argument("--learning_rate", type=float, default=1e-5, help="Learning rate for training")
     parser.add_argument("--batch_size_per_gpu", type=int, default=3200, help="Batch size per GPU")
     parser.add_argument(
@@ -203,7 +204,10 @@ def main():
         bnb_optimizer=args.bnb_optimizer,
     )
 
-    train_dataset = load_dataset(args.dataset_name, tokenizer, mel_spec_kwargs=mel_spec_kwargs)
+    train_dataset = load_dataset(args.dataset_name, 
+                                 tokenizer=tokenizer,
+                                 dataset_type=args.dataset_type,
+                                 mel_spec_kwargs=mel_spec_kwargs)
 
     trainer.train(
         train_dataset,
