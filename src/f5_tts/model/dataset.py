@@ -43,7 +43,7 @@ class HFDataset(Dataset):
         )
         
         # Calculate duration and create a new column
-        self.data = self.data.map(compute_duration)
+        self.data = self.data.map(compute_duration, batched=True, batch_size=4096, num_proc=4)
 
     def get_frame_len(self, index):
         return self.data[index]["duration"] * self.target_sample_rate / self.hop_length
