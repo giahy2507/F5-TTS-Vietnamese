@@ -15,7 +15,10 @@ from f5_tts.model.modules import MelSpec
 from f5_tts.model.utils import default
 
 def compute_duration(batch):
-    batch["duration"] = batch["audio"]["array"].shape[-1] / batch["audio"]["sampling_rate"]
+    # batch["audio"] is a list of dicts when batched=True
+    batch["duration"] = [
+        audio["array"].shape[-1] / audio["sampling_rate"] for audio in batch["audio"]
+    ]
     return batch
 
 class HFDataset(Dataset):
