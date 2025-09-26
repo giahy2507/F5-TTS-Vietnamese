@@ -14,6 +14,9 @@ from tqdm import tqdm
 from f5_tts.model.modules import MelSpec
 from f5_tts.model.utils import default
 
+def compute_duration(batch):
+    batch["duration"] = batch["audio"]["array"].shape[-1] / batch["audio"]["sampling_rate"]
+    return batch
 
 class HFDataset(Dataset):
     def __init__(
@@ -38,12 +41,12 @@ class HFDataset(Dataset):
             target_sample_rate=target_sample_rate,
             mel_spec_type=mel_spec_type,
         )
+        
+        # Calculate duration and create a new column
+        self.data = self.data.map(compute_duration)
 
     def get_frame_len(self, index):
-        row = self.data[index]
-        audio = row["audio"]["array"]
-        sample_rate = row["audio"]["sampling_rate"]
-        return audio.shape[-1] / sample_rate * self.target_sample_rate / self.hop_length
+        return self.data[index]["duration"] * self.target_sample_rate / self.hop_length
 
     def __len__(self):
         return len(self.data)
